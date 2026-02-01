@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import API_BASE_URL, { BACKEND_HOST } from '../config/api';
 import '../styles/ProductCard.css';
 
 export default function ProductCard({ product }) {
@@ -20,14 +21,56 @@ export default function ProductCard({ product }) {
     setQuantity(1);
   };
 
+  const handleImageError = (e) => {
+    console.error('Image load error for:', e.target.src, e);
+    e.target.style.display = 'none';
+    const placeholder = e.target.parentElement?.querySelector('.product-image-placeholder');
+    if (placeholder) {
+      placeholder.style.display = 'flex';
+    }
+  };
+
+  // Функція для отримання правильної URL для зображення
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) {
+      console.warn('No image URL for product:', product.name);
+      return '';
+    }
+    
+    let finalUrl = '';
+    
+    // Якщо це повна URL (http/https), повертаємо як є
+    if (imageUrl.startsWith('http')) {
+      finalUrl = imageUrl;
+    }
+    // Якщо це відносна URL (/uploads/...)
+    else if (imageUrl.startsWith('/uploads')) {
+      // Використовуємо BACKEND_HOST для отримання файлів
+      finalUrl = BACKEND_HOST + imageUrl;
+    }
+    // Інші випадки - додаємо backend host
+    else {
+      finalUrl = BACKEND_HOST + '/' + imageUrl;
+    }
+    
+    console.log(`Image URL for ${product.name}:`, { original: imageUrl, final: finalUrl });
+    return finalUrl;
+  };
+
   return (
     <div className="product-card">
       <div className="product-image-container">
         {product.image_url ? (
-          <img src={product.image_url} alt={product.name} className="product-image" />
-        ) : (
-          <div className="product-image-placeholder">Немає фото</div>
-        )}
+          <img 
+            src={getImageUrl(product.image_url)}
+            alt={product.name} 
+            className="product-image" 
+            onError={handleImageError}
+          />
+        ) : null}
+        <div className="product-image-placeholder">
+          Немає фото
+        </div>
       </div>
       
       <div className="product-info">

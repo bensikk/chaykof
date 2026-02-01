@@ -1,0 +1,10 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Green house background -->
+  <path d="M 100 40 L 160 90 L 150 90 L 150 150 Q 150 160 140 160 L 60 160 Q 50 160 50 150 L 50 90 L 40 90 Z" fill="#10b981"/>
+  
+  <!-- Keyhole circle (top) -->
+  <circle cx="100" cy="105" r="12" fill="#000000"/>
+  
+  <!-- Keyhole stem (bottom) -->
+  <rect x="97" y="117" width="6" height="20" rx="3" fill="#000000"/>
+</svg>

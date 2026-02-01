@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../config/api';
 import '../styles/AdminPanel.css';
 
 export default function AdminPanel() {
@@ -9,6 +10,7 @@ export default function AdminPanel() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [variants, setVariants] = useState([{ label: 'Стандарт', grams: '', price: '', is_default: true }]);
@@ -33,7 +35,7 @@ export default function AdminPanel() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('/api/products', {
+      const response = await axios.get(`${API_BASE_URL}/products`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProducts(response.data);
@@ -44,10 +46,13 @@ export default function AdminPanel() {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('/api/categories');
+      const response = await axios.get(`${API_BASE_URL}/categories`);
       setCategories(response.data);
-      if (response.data.length > 0 && !formData.category_id) {
-        setFormData(prev => ({ ...prev, category_id: response.data[0].id }));
+      if (response.data.length > 0) {
+        setSelectedCategory(response.data[0].id);
+        if (!formData.category_id) {
+          setFormData(prev => ({ ...prev, category_id: response.data[0].id }));
+        }
       }
     } catch (err) {
       console.error('Error fetching categories:', err);
@@ -98,10 +103,17 @@ export default function AdminPanel() {
       if (imageFile) {
         const uploadData = new FormData();
         uploadData.append('image', imageFile);
-        const uploadRes = await axios.post('/api/products/upload', uploadData, {
+        console.log('Uploading image file:', imageFile.name);
+        const uploadRes = await axios.post(`${API_BASE_URL}/products/upload`, uploadData, {
           headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
         });
+        // Зберігаємо тільки відносний шлях у БД
         imageUrl = uploadRes.data.url;
+        console.log('Image uploaded, URL:', imageUrl);
+        // Оновлюємо формData з новою URL
+        setFormData(prev => ({ ...prev, image_url: imageUrl }));
+        // Очищуємо imageFile після успішної загрузки
+        setImageFile(null);
       }
 
       const fallbackPrice = formData.price ? Number(formData.price) : 0;
@@ -113,14 +125,17 @@ export default function AdminPanel() {
       }));
 
       const payload = { ...formData, image_url: imageUrl, variants: preparedVariants };
+      console.log('Submitting payload:', payload);
 
       if (editingId) {
-        await axios.put(`/api/products/${editingId}`, payload, {
+        console.log('Updating product:', editingId);
+        await axios.put(`${API_BASE_URL}/products/${editingId}`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
         alert('Товар оновлено!');
       } else {
-        await axios.post('/api/products', payload, {
+        console.log('Creating new product');
+        await axios.post(`${API_BASE_URL}/products`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
         alert('Товар додано!');
@@ -128,7 +143,8 @@ export default function AdminPanel() {
       resetForm();
       fetchProducts();
     } catch (err) {
-      alert('Помилка: ' + err.response?.data?.error || err.message);
+      console.error('Submit error:', err.response?.data || err.message);
+      alert('Помилка: ' + (err.response?.data?.error || err.message));
     }
   };
 
@@ -146,12 +162,15 @@ export default function AdminPanel() {
     setImageFile(null);
     setEditingId(product.id);
     setShowForm(true);
+    
+    // Автоматический скролл наверх
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Ви впевнені?')) {
       try {
-        await axios.delete(`/api/products/${id}`, {
+        await axios.delete(`${API_BASE_URL}/products/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         alert('Товар видалено!');
@@ -178,6 +197,11 @@ export default function AdminPanel() {
   };
 
   const previewImage = imageFile ? URL.createObjectURL(imageFile) : (formData.image_url || '');
+  
+  // Фильтруем товары по выбранной категории
+  const filteredProducts = selectedCategory
+    ? products.filter(p => p.category_id === selectedCategory)
+    : products;
 
   return (
     <div className="admin-panel">
@@ -337,42 +361,65 @@ export default function AdminPanel() {
       )}
 
       <div className="products-table">
-        <h2>Список товарів ({products.length})</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Назва</th>
-              <th>Категорія</th>
-              <th>Ціна</th>
-              <th>Доступно</th>
-              <th>Дії</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map(product => (
-              <tr key={product.id}>
-                <td>{product.name}</td>
-                <td>{product.category_name}</td>
-                <td>{product.price} ₴</td>
-                <td>{product.available ? '✓' : '✗'}</td>
-                <td>
-                  <button
-                    className="btn btn-sm btn-warning"
-                    onClick={() => handleEdit(product)}
-                  >
-                    Редагувати
-                  </button>
-                  <button
-                    className="btn btn-sm btn-danger"
-                    onClick={() => handleDelete(product.id)}
-                  >
-                    Видалити
-                  </button>
-                </td>
+        <div className="table-header">
+          <h2>Список товарів ({filteredProducts.length} / {products.length})</h2>
+        </div>
+        
+        <div className="categories-filter">
+          <button 
+            className={`category-btn ${selectedCategory === null ? 'active' : ''}`}
+            onClick={() => setSelectedCategory(null)}
+          >
+            Всі ({products.length})
+          </button>
+          {categories.map(category => (
+            <button
+              key={category.id}
+              className={`category-btn ${selectedCategory === category.id ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(category.id)}
+            >
+              <span>{category.icon}</span> {category.name} ({products.filter(p => p.category_id === category.id).length})
+            </button>
+          ))}
+        </div>
+        
+        <div className="products-list">
+          <table>
+            <thead>
+              <tr>
+                <th>Назва</th>
+                <th>Категорія</th>
+                <th>Ціна</th>
+                <th>Доступно</th>
+                <th>Дії</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredProducts.map(product => (
+                <tr key={product.id}>
+                  <td data-label="Назва">{product.name}</td>
+                  <td data-label="Категорія">{product.category_name}</td>
+                  <td data-label="Ціна">{product.price} ₴</td>
+                  <td data-label="Доступно">{product.available ? '✓' : '✗'}</td>
+                  <td data-label="Дії" className="actions-cell">
+                    <button
+                      className="btn btn-sm btn-primary"
+                      onClick={() => handleEdit(product)}
+                    >
+                      Редагувати
+                    </button>
+                    <button
+                      className="btn btn-sm btn-danger"
+                      onClick={() => handleDelete(product.id)}
+                    >
+                      Видалити
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

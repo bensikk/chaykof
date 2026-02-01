@@ -12,10 +12,10 @@
 }
 
 .manager-panel h1 {
-  color: #8B4513;
+  color: #ffffff;
   font-size: 2rem;
   margin-bottom: 20px;
-  border-bottom: 3px solid #D2691E;
+  border-bottom: 3px solid #10b981;
   padding-bottom: 15px;
 }
 
@@ -27,15 +27,17 @@
   width: 100%;
   padding: 12px 20px;
   font-size: 1rem;
-  border: 2px solid #D2691E;
+  border: 2px solid #10b981;
   border-radius: 25px;
   outline: none;
   transition: all 0.3s ease;
+  background: #111111;
+  color: #ffffff;
 }
 
 .search-input:focus {
-  border-color: #8B4513;
-  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 .date-filters {
@@ -47,9 +49,9 @@
 
 .date-btn {
   padding: 8px 16px;
-  border: 2px solid #A0522D;
-  background: white;
-  color: #8B4513;
+  border: 2px solid #374151;
+  background: #1f2937;
+  color: #ffffff;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
@@ -57,13 +59,13 @@
 }
 
 .date-btn:hover {
-  background-color: #fff5f0;
+  background-color: #374151;
 }
 
 .date-btn.active {
-  background-color: #A0522D;
-  color: white;
-  border-color: #A0522D;
+  background-color: #10b981;
+  color: #000000;
+  border-color: #10b981;
 }
 
 .filters {
@@ -76,17 +78,18 @@
 .results-info {
   margin-bottom: 20px;
   padding: 10px 15px;
-  background-color: #f8f7f2;
+  background-color: #1f2937;
   border-radius: 8px;
-  color: #666;
+  color: #d1d5db;
   font-weight: 500;
+  border-left: 3px solid #10b981;
 }
 
 .filter-btn {
   padding: 10px 20px;
-  border: 2px solid #D2691E;
-  background: white;
-  color: #8B4513;
+  border: 2px solid #10b981;
+  background: #000000;
+  color: #ffffff;
   border-radius: 20px;
   cursor: pointer;
   font-weight: 600;
@@ -94,13 +97,13 @@
 }
 
 .filter-btn:hover {
-  background-color: #fff5f0;
+  background-color: #1f2937;
 }
 
 .filter-btn.active {
-  background-color: #8B4513;
-  color: white;
-  border-color: #8B4513;
+  background-color: #10b981;
+  color: #000000;
+  border-color: #10b981;
 }
 
 .orders-list {
@@ -110,15 +113,16 @@
 }
 
 .order-card {
-  background: white;
+  background: #111111;
   padding: 25px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   transition: box-shadow 0.3s;
+  border: 1px solid #374151;
 }
 
 .order-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .order-header {
@@ -127,16 +131,16 @@
   align-items: flex-start;
   margin-bottom: 20px;
   padding-bottom: 15px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid #374151;
 }
 
 .order-header h3 {
-  color: #8B4513;
+  color: #ffffff;
   margin-bottom: 5px;
 }
 
 .order-date {
-  color: #666;
+  color: #d1d5db;
   font-size: 0.9rem;
 }
 
@@ -148,45 +152,48 @@
 }
 
 .status-pending {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: #d97706;
+  color: #ffffff;
 }
 
 .status-accepted {
-  background-color: #d1ecf1;
-  color: #0c5460;
+  background-color: #0891b2;
+  color: #ffffff;
 }
 
 .status-preparing {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: #7c3aed;
+  color: #ffffff;
 }
 
 .status-ready {
-  background-color: #c3e6cb;
-  color: #155724;
+  background-color: #10b981;
+  color: #000000;
+  font-weight: 700;
 }
 
 .status-completed {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: #10b981;
+  color: #000000;
+  font-weight: 700;
 }
 
 .status-cancelled {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: #ef4444;
+  color: #ffffff;
 }
 
 .order-customer {
   margin-bottom: 15px;
   padding: 15px;
-  background-color: #f8f7f2;
+  background-color: #1f2937;
   border-radius: 8px;
+  border-left: 3px solid #10b981;
 }
 
 .order-customer p {
   margin: 5px 0;
-  color: #555;
+  color: #d1d5db;
 }
 
 .order-items {
@@ -194,7 +201,7 @@
 }
 
 .order-items h4 {
-  color: #8B4513;
+  color: #ffffff;
   margin-bottom: 10px;
 }
 
@@ -203,7 +210,8 @@
   grid-template-columns: 1fr auto auto;
   gap: 15px;
   padding: 10px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #374151;
+  color: #d1d5db;
 }
 
 .order-item:last-child {
@@ -214,11 +222,13 @@
   display: flex;
   justify-content: space-between;
   padding: 15px;
-  background-color: #f8f7f2;
+  background-color: #1f2937;
   border-radius: 8px;
   margin-bottom: 20px;
   font-size: 1.2rem;
-  color: #8B4513;
+  color: #ffffff;
+  border-left: 3px solid #10b981;
+  font-weight: 600;
 }
 
 .order-actions {
@@ -243,9 +253,9 @@
 
 .pagination-btn {
   padding: 10px 20px;
-  border: 2px solid #D2691E;
-  background: white;
-  color: #8B4513;
+  border: 2px solid #10b981;
+  background: #000000;
+  color: #ffffff;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
@@ -253,8 +263,8 @@
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background-color: #8B4513;
-  color: white;
+  background-color: #10b981;
+  color: #000000;
 }
 
 .pagination-btn:disabled {
@@ -272,9 +282,9 @@
 .pagination-page {
   width: 40px;
   height: 40px;
-  border: 2px solid #D2691E;
-  background: white;
-  color: #8B4513;
+  border: 2px solid #10b981;
+  background: #000000;
+  color: #ffffff;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
@@ -282,13 +292,14 @@
 }
 
 .pagination-page:hover {
-  background-color: #fff5f0;
+  background-color: #1f2937;
 }
 
 .pagination-page.active {
-  background-color: #8B4513;
-  color: white;
-  border-color: #8B4513;
+  background-color: #10b981;
+  color: #000000;
+  border-color: #10b981;
+  font-weight: 700;
 }
 
 
@@ -297,7 +308,7 @@
   text-align: center;
   padding: 40px;
   font-size: 1.1rem;
-  color: #666;
+  color: #d1d5db;
 }
 
 @media (max-width: 768px) {

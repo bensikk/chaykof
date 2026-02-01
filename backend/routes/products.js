@@ -19,7 +19,18 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage });
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB максимум
+  fileFilter: (req, file, cb) => {
+    // Перевіряємо MIME type
+    if (!file.mimetype.startsWith('image/')) {
+      cb(new Error('Тільки зображення дозволені'));
+    } else {
+      cb(null, true);
+    }
+  }
+});
 
 // Отримання всіх товарів
 router.get('/', async (req, res) => {
@@ -252,13 +263,45 @@ router.delete('/:id', verifyToken, isAdmin, async (req, res) => {
   }
 });
 
-// Завантаження зображення товару (адмін)
+// Завантаження зображення товару (адмін) - має бути перед /:id
 router.post('/upload', verifyToken, isAdmin, upload.single('image'), (req, res) => {
+  console.log('Upload request:', { file: req.file?.filename, user: req.user?.id });
+  
   if (!req.file) {
+    console.log('No file received in upload');
     return res.status(400).json({ error: 'Файл не завантажено' });
   }
-  const urlPath = `/uploads/${req.file.filename}`;
-  res.json({ url: urlPath });
+  
+  try {
+    const filename = req.file.filename;
+    const urlPath = `/uploads/${filename}`;
+    
+    console.log('File uploaded successfully:', filename);
+    
+    res.json({ 
+      success: true,
+      url: urlPath,
+      message: 'Зображення завантажено успішно'
+    });
+  } catch (err) {
+    console.error('Upload error:', err);
+    res.status(500).json({ error: 'Помилка при завантаженні зображення: ' + err.message });
+  }
+});
+
+// Обработчик ошибок для multer
+router.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    console.error('Multer error:', err);
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ error: 'Файл занадто великий. Максимум 10MB' });
+    }
+    return res.status(400).json({ error: 'Помилка завантаження файлу: ' + err.message });
+  } else if (err) {
+    console.error('Upload middleware error:', err);
+    return res.status(400).json({ error: err.message });
+  }
+  next();
 });
 
 module.exports = router;

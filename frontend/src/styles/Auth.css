@@ -7,19 +7,20 @@
 }
 
 .auth-card {
-  background: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: var(--surface);
+  padding: 32px 28px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 24px rgba(31, 31, 31, 0.08);
   width: 100%;
   max-width: 400px;
 }
 
 .auth-card h1 {
-  color: #8B4513;
-  margin-bottom: 30px;
+  color: var(--text);
+  margin-bottom: 22px;
   text-align: center;
-  font-size: 2rem;
+  font-size: 1.7rem;
 }
 
 .auth-card form {
@@ -27,45 +28,47 @@
 }
 
 .error-message {
-  background-color: #fee;
-  color: #c33;
+  background-color: #7f1d1d;
+  color: #fecaca;
   padding: 12px;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  border-left: 4px solid #c33;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  border-left: 4px solid #ef4444;
 }
 
 .auth-link {
   text-align: center;
-  color: #666;
+  color: #d1d5db;
 }
 
 .auth-link a {
-  color: #8B4513;
+  color: #10b981;
   text-decoration: none;
   font-weight: 600;
 }
 
 .auth-link a:hover {
   text-decoration: underline;
+  color: #34d399;
 }
 
 .demo-accounts {
-  background-color: #f8f7f2;
-  padding: 15px;
-  border-radius: 6px;
+  background-color: #1f2937;
+  padding: 14px;
+  border-radius: 12px;
   margin-top: 20px;
-  border-left: 4px solid #D2691E;
+  border-left: 4px solid var(--accent);
   font-size: 0.9rem;
 }
 
 .demo-accounts p {
   margin: 5px 0;
-  color: #555;
+  color: #d1d5db;
 }
 
 .demo-accounts strong {
-  color: #8B4513;
+  color: #10b981;
+  font-weight: 700;
 }
 
 @media (max-width: 480px) {
@@ -74,11 +77,11 @@
   }
 
   .auth-card {
-    padding: 26px 22px;
-    border-radius: 10px;
+    padding: 24px 20px;
+    border-radius: 16px;
   }
 
   .auth-card h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
 }

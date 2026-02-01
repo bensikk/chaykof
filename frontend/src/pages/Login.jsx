@@ -6,7 +6,7 @@ import '../styles/Auth.css';
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await login(email, password);
+      await login(username, password);
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
@@ -35,11 +35,11 @@ export default function Login() {
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email</label>
+            <label>Логін</label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>
@@ -65,9 +65,9 @@ export default function Login() {
 
         <div className="demo-accounts">
           <p><strong>Демо-акаунти:</strong></p>
-          <p>Email: admin@chaykof.com | Пароль: password</p>
-          <p>Email: manager@chaykof.com | Пароль: password</p>
-          <p>Email: user@chaykof.com | Пароль: password</p>
+          <p>Логін: admin | Пароль: password</p>
+          <p>Логін: manager | Пароль: password</p>
+          <p>Логін: user | Пароль: password</p>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import API_BASE_URL from '../config/api';
 import '../styles/Cart.css';
 
 export default function Cart() {
@@ -24,7 +25,7 @@ export default function Cart() {
         quantity: item.quantity
       }));
 
-      await axios.post('/api/orders', { items }, {
+      await axios.post(`${API_BASE_URL}/orders`, { items }, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../config/api';
 import '../styles/ManagerPanel.css';
 
 export default function ManagerPanel() {
@@ -25,7 +26,7 @@ export default function ManagerPanel() {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get('/api/orders/all', {
+      const response = await axios.get(`${API_BASE_URL}/orders/all`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setOrders(response.data);
@@ -39,7 +40,7 @@ export default function ManagerPanel() {
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       await axios.patch(
-        `/api/orders/${orderId}/status`,
+        `${API_BASE_URL}/orders/${orderId}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -87,7 +88,8 @@ export default function ManagerPanel() {
     const searchMatch = searchTerm === '' || 
       order.id.toString().includes(searchTerm) ||
       order.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.user_email.toLowerCase().includes(searchTerm.toLowerCase());
+      (order.user_login || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.user_email || '').toLowerCase().includes(searchTerm.toLowerCase());
     
     return statusMatch && dateMatch && searchMatch;
   });
@@ -104,7 +106,7 @@ export default function ManagerPanel() {
       <div className="search-bar">
         <input
           type="text"
-          placeholder="🔍 Пошук за номером, ім'ям або email..."
+          placeholder="🔍 Пошук за номером, ім'ям або логіном..."
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
@@ -198,7 +200,8 @@ export default function ManagerPanel() {
 
                 <div className="order-customer">
                   <p><strong>Клієнт:</strong> {order.user_name}</p>
-                  <p><strong>Email:</strong> {order.user_email}</p>
+                  <p><strong>Логін:</strong> {order.user_login || '—'}</p>
+                  {order.user_email && <p><strong>Email:</strong> {order.user_email}</p>}
                 </div>
 
                 <div className="order-items">

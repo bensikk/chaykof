@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import logo from '../assets/logo.svg';
 import '../styles/Header.css';
 
 export default function Header() {
@@ -16,7 +17,11 @@ export default function Header() {
     <header className="header">
       <div className="header-container">
         <Link to="/" className="logo">
-          ☕ CHAYKOF & LOFT BAR
+          <img src={logo} alt="Chaykof Logo" className="logo-image" />
+          <div className="logo-text">
+            <div className="logo-title">CHAYKOF</div>
+            <div className="logo-subtitle">сімейне кафе</div>
+          </div>
         </Link>
 
         <button
@@ -47,7 +52,7 @@ export default function Header() {
 
             {user ? (
               <div className="user-menu">
-                <span className="user-name">{user.name || user.email}</span>
+                <span className="user-name">{user.name || user.username || user.email}</span>
                 <button className="btn btn-secondary" onClick={() => { logout(); closeMenu(); }}>
                   Вихід
                 </button>

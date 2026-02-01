@@ -8,8 +8,14 @@ export default function Home() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
-          <h1>☕ Сімейне кафе CHAYKOF & LOFT BAR</h1>
-          <p>Чайна та лофт-бар атмосфера для вашої сім'ї</p>
+          <h1>CHAYKOF & LOFT BAR</h1>
+          <p>Мінімалістичний затишок, смачні напої та легкі страви щодня.</p>
+          <div className="hero-tags">
+            <span>☕ Кава</span>
+            <span>🥐 Сніданки</span>
+            <span>🍰 Десерти</span>
+            <span>🍹 Коктейлі</span>
+          </div>
           <Link to="/menu" className="btn btn-primary btn-large">
             Переглянути меню
           </Link>
@@ -22,25 +28,25 @@ export default function Home() {
           <div className="feature">
             <div className="feature-icon">☕</div>
             <h3>Гарячі напої</h3>
-            <p>Смачна кава, чай та гарячий шоколад для кожного</p>
+            <p>Кава та чай з якісних зерен і листя</p>
           </div>
 
           <div className="feature">
             <div className="feature-icon">🍹</div>
             <h3>Коктейлі</h3>
-            <p>Різноманітні класичні та авторські коктейлі</p>
+            <p>Класика і легкі авторські мікси</p>
           </div>
 
           <div className="feature">
             <div className="feature-icon">🍰</div>
             <h3>Десерти</h3>
-            <p>Смачні тістечка та сладкі дива</p>
+            <p>Ніжні тістечка та сезонні солодощі</p>
           </div>
 
           <div className="feature">
             <div className="feature-icon">👨‍👩‍👧‍👦</div>
             <h3>Сімейна атмосфера</h3>
-            <p>Теплий та привітний атмос для всієї сім'ї</p>
+            <p>Тихий простір для роботи й зустрічей</p>
           </div>
         </div>
       </section>

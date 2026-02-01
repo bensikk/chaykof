@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config/api';
 
 const AuthContext = createContext();
 
@@ -18,7 +19,7 @@ export function AuthProvider({ children }) {
 
   const verifyToken = async () => {
     try {
-      const response = await axios.get('/api/auth/profile', {
+      const response = await axios.get(`${API_BASE_URL}/auth/profile`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(response.data);
@@ -31,17 +32,18 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const login = async (email, password) => {
-    const response = await axios.post('/api/auth/login', { email, password });
+  const login = async (username, password) => {
+    const response = await axios.post(`${API_BASE_URL}/auth/login`, { username, password });
     localStorage.setItem('token', response.data.token);
     setToken(response.data.token);
     setUser(response.data.user);
     return response.data;
   };
 
-  const register = async (email, password, name) => {
-    const response = await axios.post('/api/auth/register', { 
-      email, 
+  const register = async (username, password, name, email) => {
+    const response = await axios.post(`${API_BASE_URL}/auth/register`, { 
+      username,
+      email,
       password, 
       name 
     });

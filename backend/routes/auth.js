@@ -9,16 +9,33 @@ const router = express.Router();
 // Реєстрація
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { username, email, password, name } = req.body;
+    const normalizedUsername = username?.trim();
+    const normalizedEmail = email?.trim() || null;
+
+    if (!normalizedUsername || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
+    }
 
     // Перевірка на наявність користувача
-    const userExists = await pool.query(
-      'SELECT * FROM users WHERE email = $1',
-      [email]
+    const usernameExists = await pool.query(
+      'SELECT id FROM users WHERE username = $1',
+      [normalizedUsername]
     );
 
-    if (userExists.rows.length > 0) {
-      return res.status(400).json({ error: 'User already exists' });
+    if (usernameExists.rows.length > 0) {
+      return res.status(400).json({ error: 'Username already exists' });
+    }
+
+    if (normalizedEmail) {
+      const emailExists = await pool.query(
+        'SELECT id FROM users WHERE email = $1',
+        [normalizedEmail]
+      );
+
+      if (emailExists.rows.length > 0) {
+        return res.status(400).json({ error: 'Email already exists' });
+      }
     }
 
     // Хешування пароля
@@ -26,8 +43,8 @@ router.post('/register', async (req, res) => {
 
     // Вставка користувача
     const result = await pool.query(
-      'INSERT INTO users (email, password, name, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role',
-      [email, hashedPassword, name, 'user']
+      'INSERT INTO users (username, email, password, name, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, email, name, role',
+      [normalizedUsername, normalizedEmail, hashedPassword, name, 'user']
     );
 
     res.status(201).json({
@@ -42,11 +59,16 @@ router.post('/register', async (req, res) => {
 // Логін
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, login, email, password } = req.body;
+    const loginValue = username?.trim() || login?.trim() || email?.trim();
+
+    if (!loginValue || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
+    }
 
     const result = await pool.query(
-      'SELECT * FROM users WHERE email = $1',
-      [email]
+      'SELECT * FROM users WHERE username = $1 OR email = $1',
+      [loginValue]
     );
 
     if (result.rows.length === 0) {
@@ -61,7 +83,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, username: user.username, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRE }
     );
@@ -71,6 +93,7 @@ router.post('/login', async (req, res) => {
       token,
       user: {
         id: user.id,
+        username: user.username,
         email: user.email,
         name: user.name,
         role: user.role
@@ -85,7 +108,7 @@ router.post('/login', async (req, res) => {
 router.get('/profile', verifyToken, async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT id, email, name, role FROM users WHERE id = $1',
+      'SELECT id, username, email, name, role FROM users WHERE id = $1',
       [req.user.id]
     );
 

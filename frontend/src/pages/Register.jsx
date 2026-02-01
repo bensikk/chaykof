@@ -6,6 +6,7 @@ import '../styles/Auth.css';
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -18,7 +19,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await register(email, password, name);
+      await register(username, password, name, email);
       alert('Реєстрація успішна! Тепер увійдіть.');
       navigate('/login');
     } catch (err) {
@@ -37,6 +38,16 @@ export default function Register() {
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
+            <label>Логін</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
             <label>Ім'я</label>
             <input
               type="text"
@@ -47,12 +58,11 @@ export default function Register() {
           </div>
 
           <div className="form-group">
-            <label>Email</label>
+            <label>Email (необов'язково)</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
             />
           </div>
 
