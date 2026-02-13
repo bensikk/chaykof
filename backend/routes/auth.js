@@ -9,12 +9,33 @@ const router = express.Router();
 // Реєстрація
 router.post('/register', async (req, res) => {
   try {
-    const { username, email, password, name } = req.body;
+    const { username, phone, password, name } = req.body;
     const normalizedUsername = username?.trim();
-    const normalizedEmail = email?.trim() || null;
+    const normalizedPhone = phone?.trim();
+    const normalizedName = name?.trim();
 
-    if (!normalizedUsername || !password) {
-      return res.status(400).json({ error: 'Username and password are required' });
+    // Валідація вхідних даних
+    if (!normalizedUsername || !password || !normalizedPhone || !normalizedName) {
+      return res.status(400).json({ error: 'Всі поля обов\'язкові' });
+    }
+
+    // Валідація пароля
+    if (password.length < 6) {
+      return res.status(400).json({ 
+        error: 'Пароль повинен містити мінімум 6 символів' 
+      });
+    }
+
+    // Валідація номера телефону (10 цифр)
+    let phoneDigits = normalizedPhone.replace(/\D/g, '');
+    
+    // Якщо номер починається з 380, видаляємо 38
+    if (phoneDigits.startsWith('380')) {
+      phoneDigits = phoneDigits.substring(2);
+    }
+    
+    if (phoneDigits.length !== 10) {
+      return res.status(400).json({ error: 'Формат номера: +380XXXXXXXXX або 0XXXXXXXXX (10 цифр)' });
     }
 
     // Перевірка на наявність користувача
@@ -24,18 +45,17 @@ router.post('/register', async (req, res) => {
     );
 
     if (usernameExists.rows.length > 0) {
-      return res.status(400).json({ error: 'Username already exists' });
+      return res.status(400).json({ error: 'Цей логін вже займаний' });
     }
 
-    if (normalizedEmail) {
-      const emailExists = await pool.query(
-        'SELECT id FROM users WHERE email = $1',
-        [normalizedEmail]
-      );
+    // Перевірка на наявність номера телефону
+    const phoneExists = await pool.query(
+      'SELECT id FROM users WHERE phone = $1',
+      [normalizedPhone]
+    );
 
-      if (emailExists.rows.length > 0) {
-        return res.status(400).json({ error: 'Email already exists' });
-      }
+    if (phoneExists.rows.length > 0) {
+      return res.status(400).json({ error: 'Цей номер телефону вже зареєстрований' });
     }
 
     // Хешування пароля
@@ -43,12 +63,12 @@ router.post('/register', async (req, res) => {
 
     // Вставка користувача
     const result = await pool.query(
-      'INSERT INTO users (username, email, password, name, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, email, name, role',
-      [normalizedUsername, normalizedEmail, hashedPassword, name, 'user']
+      'INSERT INTO users (username, phone, password, name, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, phone, name, role',
+      [normalizedUsername, normalizedPhone, hashedPassword, normalizedName, 'user']
     );
 
     res.status(201).json({
-      message: 'User registered successfully',
+      message: 'Користувач успішно зареєстрований',
       user: result.rows[0]
     });
   } catch (err) {

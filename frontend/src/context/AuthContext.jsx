@@ -40,10 +40,10 @@ export function AuthProvider({ children }) {
     return response.data;
   };
 
-  const register = async (username, password, name, email) => {
+  const register = async (username, password, name, phone) => {
     const response = await axios.post(`${API_BASE_URL}/auth/register`, { 
       username,
-      email,
+      phone,
       password, 
       name 
     });

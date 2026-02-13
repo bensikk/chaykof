@@ -23,6 +23,7 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE,
+    phone VARCHAR(20) UNIQUE,
     password VARCHAR(255) NOT NULL,
     name VARCHAR(255),
     role user_role DEFAULT 'user',
@@ -65,6 +66,18 @@ CREATE TABLE product_variants (
 
 -- Унікальний індекс: тільки один варіант може бути дефолтним для кожного продукту
 CREATE UNIQUE INDEX idx_product_variants_default ON product_variants(product_id) WHERE is_default = true;
+
+-- Таблиця кошика
+CREATE TABLE cart_items (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    variant_id INTEGER REFERENCES product_variants(id) ON DELETE CASCADE,
+    quantity INTEGER NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, product_id, variant_id)
+);
 
 -- Таблиця замовлень
 CREATE TABLE orders (

@@ -80,7 +80,7 @@ router.post('/', verifyToken, async (req, res) => {
 router.get('/all', verifyToken, isManagerOrAdmin, async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT o.*, u.name as user_name, u.username as user_login, u.email as user_email,
+      `SELECT o.*, u.name as user_name, u.username as user_login, u.email as user_email, u.phone as user_phone,
               json_agg(
                 json_build_object(
                   'id', oi.id,
@@ -97,7 +97,7 @@ router.get('/all', verifyToken, isManagerOrAdmin, async (req, res) => {
        JOIN users u ON o.user_id = u.id
        LEFT JOIN order_items oi ON o.id = oi.order_id
        LEFT JOIN products p ON oi.product_id = p.id
-       GROUP BY o.id, u.name, u.username, u.email
+       GROUP BY o.id, u.name, u.username, u.email, u.phone
        ORDER BY o.created_at DESC`
     );
 

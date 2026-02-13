@@ -36,6 +36,29 @@
   border-left: 4px solid #ef4444;
 }
 
+.error-text {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.success-text {
+  color: #10b981;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.form-group input.error {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+.form-group input.success {
+  border-color: #10b981 !important;
+}
+
 .auth-link {
   text-align: center;
   color: #d1d5db;

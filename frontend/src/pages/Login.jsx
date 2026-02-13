@@ -31,7 +31,11 @@ export default function Login() {
       <div className="auth-card">
         <h1>Вхід</h1>
         
-        {error && <div className="error-message">{error}</div>}
+        {error && (
+          <div className="error-message">
+            <strong>❌ Помилка:</strong> {error}
+          </div>
+        )}
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -40,8 +44,12 @@ export default function Login() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              className={username && username.trim() ? 'success' : username ? 'error' : ''}
               required
             />
+            {username && !username.trim() && (
+              <small className="error-text">Логін не може бути порожнім</small>
+            )}
           </div>
 
           <div className="form-group">
@@ -50,11 +58,15 @@ export default function Login() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className={password ? 'success' : ''}
               required
             />
+            {password && password.length < 6 && (
+              <small className="error-text">Пароль надто короткий</small>
+            )}
           </div>
 
-          <button type="submit" className="btn btn-primary" disabled={loading}>
+          <button type="submit" className="btn btn-primary" disabled={loading || !username.trim() || !password}>
             {loading ? 'Завантаження...' : 'Вхід'}
           </button>
         </form>

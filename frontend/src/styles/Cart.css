@@ -32,7 +32,7 @@
 
 .empty-cart p {
   font-size: 1.1rem;
-  color: var(--muted);
+  color: #ffffff;
   margin-bottom: 30px;
 }
 
@@ -77,7 +77,7 @@
 }
 
 .cart-item-info p {
-  color: var(--muted);
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -114,6 +114,7 @@
   border: none;
   background: none;
   font-weight: 500;
+  color: #ffffff;
 }
 
 .cart-item-total {
@@ -146,7 +147,7 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
-  color: var(--muted);
+  color: #ffffff;
 }
 
 .summary-total {
@@ -154,7 +155,7 @@
   justify-content: space-between;
   font-size: 1.2rem;
   font-weight: bold;
-  color: var(--primary);
+  color: #ffffff;
   border-top: 1px solid var(--border);
   padding-top: 15px;
   margin-bottom: 20px;

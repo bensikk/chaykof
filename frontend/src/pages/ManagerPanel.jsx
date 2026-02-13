@@ -11,7 +11,7 @@ export default function ManagerPanel() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
-  const [dateFilter, setDateFilter] = useState('all');
+  const [dateFilter, setDateFilter] = useState('today');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
@@ -89,7 +89,8 @@ export default function ManagerPanel() {
       order.id.toString().includes(searchTerm) ||
       order.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (order.user_login || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (order.user_email || '').toLowerCase().includes(searchTerm.toLowerCase());
+      (order.user_email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.user_phone || '').includes(searchTerm);
     
     return statusMatch && dateMatch && searchMatch;
   });
@@ -106,7 +107,7 @@ export default function ManagerPanel() {
       <div className="search-bar">
         <input
           type="text"
-          placeholder="🔍 Пошук за номером, ім'ям або логіном..."
+          placeholder="🔍 Пошук за номером, ім'ям, телефоном або логіном..."
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
@@ -118,16 +119,16 @@ export default function ManagerPanel() {
 
       <div className="date-filters">
         <button
-          className={`date-btn ${dateFilter === 'all' ? 'active' : ''}`}
-          onClick={() => { setDateFilter('all'); setCurrentPage(1); }}
-        >
-          Всі дати
-        </button>
-        <button
           className={`date-btn ${dateFilter === 'today' ? 'active' : ''}`}
           onClick={() => { setDateFilter('today'); setCurrentPage(1); }}
         >
           Сьогодні
+        </button>
+        <button
+          className={`date-btn ${dateFilter === 'all' ? 'active' : ''}`}
+          onClick={() => { setDateFilter('all'); setCurrentPage(1); }}
+        >
+          Всі дати
         </button>
         <button
           className={`date-btn ${dateFilter === 'week' ? 'active' : ''}`}
@@ -201,6 +202,7 @@ export default function ManagerPanel() {
                 <div className="order-customer">
                   <p><strong>Клієнт:</strong> {order.user_name}</p>
                   <p><strong>Логін:</strong> {order.user_login || '—'}</p>
+                  {order.user_phone && <p><strong>📞 Телефон:</strong> {order.user_phone}</p>}
                   {order.user_email && <p><strong>Email:</strong> {order.user_email}</p>}
                 </div>
 
